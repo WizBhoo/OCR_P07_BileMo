@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Entity Class ClientUser.
  *
  * @ORM\Entity(repositoryClass=ClientUserRepository::class)
- * @UniqueEntity(fields={"email"}, message="This ClientUser already exists", groups={"user"})
+ * @UniqueEntity(fields={"email"}, message="This ClientUser already exists")
  */
 class ClientUser
 {
@@ -41,14 +41,13 @@ class ClientUser
      *
      * @ORM\Column(type="string", length=50)
      *
-     * @Assert\NotBlank(message="You must add a name", groups={"user"})
+     * @Assert\NotBlank(message="You must add a name")
      * @Assert\Length(
      *     min=3,
      *     max=50,
      *     minMessage="The name should contain at least {{ limit }} characters",
      *     maxMessage="The name should not contain more than {{ limit }} characters",
-     *     allowEmptyString=false,
-     *     groups={"user"}
+     *     allowEmptyString=false
      * )
      */
     private $name;
@@ -58,14 +57,13 @@ class ClientUser
      *
      * @ORM\Column(type="string", length=30, unique=true)
      *
-     * @Assert\NotBlank(message="You must add a username", groups={"user"})
+     * @Assert\NotBlank(message="You must add a username")
      * @Assert\Length(
      *     min=3,
      *     max=30,
      *     minMessage="The name should contain at least {{ limit }} characters",
      *     maxMessage="The name should not contain more than {{ limit }} characters",
-     *     allowEmptyString=false,
-     *     groups={"user"}
+     *     allowEmptyString=false
      * )
      */
     private $username;
@@ -75,11 +73,8 @@ class ClientUser
      *
      * @ORM\Column(type="string", length=100, unique=true)
      *
-     * @Assert\NotBlank(message="You must enter an email", groups={"user"})
-     * @Assert\Email(
-     *     message="The Email '{{ value }}' is not a valid email",
-     *     groups={"user"}
-     * )
+     * @Assert\NotBlank(message="You must enter an email")
+     * @Assert\Email(message="The Email '{{ value }}' is not a valid email")
      */
     private $email;
 
