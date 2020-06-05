@@ -149,19 +149,19 @@ class Phone
     }
 
     /**
-     * @return string|null
+     * @return float|null
      */
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
     /**
-     * @param string $price
+     * @param float $price
      *
      * @return $this
      */
-    public function setPrice(string $price): self
+    public function setPrice(float $price): self
     {
         $this->price = $price;
 
