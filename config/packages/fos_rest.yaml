@@ -1,14 +1,21 @@
 # Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
 fos_rest:
     param_fetcher_listener:  true
-    allowed_methods_listener:  true
-    routing_loader: true
+    routing_loader: false
     body_converter:
       enabled: true
     serializer:
       serialize_null: true
     view:
         view_response_listener:  true
+        formats: { json: true, xml: false, rss: false }
     format_listener:
         rules:
-            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }
+            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json ] }
+            - { path: '^/', stop: true }
+    exception:
+        exception_controller: 'fos_rest.exception.controller:showAction'
+        codes:
+            Doctrine\ORM\EntityNotFoundException: 404
+        messages:
+            Doctrine\ORM\EntityNotFoundException: true
