@@ -22,16 +22,66 @@ class ClientUserFixtures extends Fixture implements DependentFixtureInterface
      * @var array[]
      */
     private $samples = [
-        ['Jean TENDBIEN', 'The Listener', 'jeantendbien@bubble.com'],
-        ['Marie SMARTPHONE', 'Pink Lady', 'marie.smartphone@bubble.com'],
-        ['Paul TALKER', 'Fast Caller', 'paul-talker@bubble.com'],
-        ['Jacques ADIT', 'DIY', 'jacques.adit@lovely-panda.fr'],
-        ['Tom BALEAU', 'The Waterproof', 'tombaleau@lovely-panda.fr'],
-        ['Iphigénie FILAIRE', 'WifiGenius', 'iphigenie.filaire@lovely-panda.fr'],
-        ['Ray ZO', 'The Connected', 'ray-zo@lovely-panda.fr'],
-        ['Eva PASCAPTER', 'Star 5G', 'eva.pascapter@phonephone.call'],
-        ['Sarah CROCHE', 'Say Allo', 'sarah-croche@phonephone.call'],
-        ['Ella PLUDBATRIE', 'Socket Finder', 'ella-plusbatrie@phonephone.call'],
+        [
+            'Jean TENDBIEN',
+            'The Listener',
+            'jeantendbien@bubble.com',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'1'
+        ],
+        [
+            'Marie SMARTPHONE',
+            'Pink Lady',
+            'marie.smartphone@bubble.com',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'1'
+        ],
+        [
+            'Paul TALKER',
+            'Fast Caller',
+            'paul-talker@bubble.com',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'1'
+        ],
+        [
+            'Jacques ADIT',
+            'DIY',
+            'jacques.adit@lovely-panda.fr',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'2'
+        ],
+        [
+            'Tom BALEAU',
+            'The Waterproof',
+            'tombaleau@lovely-panda.fr',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'2'
+        ],
+        [
+            'Iphigénie FILAIRE',
+            'WifiGenius',
+            'iphigenie.filaire@lovely-panda.fr',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'2'
+        ],
+        [
+            'Ray ZO',
+            'The Connected',
+            'ray-zo@lovely-panda.fr',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'2'
+        ],
+        [
+            'Eva PASCAPTER',
+            'Star 5G',
+            'eva.pascapter@phonephone.call',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'3'
+        ],
+        [
+            'Sarah CROCHE',
+            'Say Allo',
+            'sarah-croche@phonephone.call',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'3'
+        ],
+        [
+            'Ella PLUDBATRIE',
+            'Socket Finder',
+            'ella-plusbatrie@phonephone.call',
+            ClientFixtures::CLIENT_REFERENCE_PREFIX.'3'
+        ],
     ];
 
     /**
@@ -49,20 +99,10 @@ class ClientUserFixtures extends Fixture implements DependentFixtureInterface
                 ->setName($sample[0])
                 ->setUsername($sample[1])
                 ->setEmail($sample[2])
+                ->setClient(
+                    $this->getReference($sample[3])
+                );
             ;
-            if ($key <= 2) {
-                $clientUser->setClient(
-                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'1')
-                );
-            } elseif ($key > 2 && $key <=6 ) {
-                $clientUser->setClient(
-                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
-                );
-            } elseif ($key > 6) {
-                $clientUser->setClient(
-                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'3')
-                );
-            }
             $manager->persist($clientUser);
         }
 
