@@ -17,6 +17,24 @@ use Doctrine\Persistence\ObjectManager;
 class ClientUserFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
+     * An array that represents data samples to load.
+     *
+     * @var array[]
+     */
+    private $samples = [
+        ['Jean TENDBIEN', 'The Listener', 'jeantendbien@bubble.com'],
+        ['Marie SMARTPHONE', 'Pink Lady', 'marie.smartphone@bubble.com'],
+        ['Paul TALKER', 'Fast Caller', 'paul-talker@bubble.com'],
+        ['Jacques ADIT', 'DIY', 'jacques.adit@lovely-panda.fr'],
+        ['Tom BALEAU', 'The Waterproof', 'tombaleau@lovely-panda.fr'],
+        ['Iphigénie FILAIRE', 'WifiGenius', 'iphigenie.filaire@lovely-panda.fr'],
+        ['Ray ZO', 'The Connected', 'ray-zo@lovely-panda.fr'],
+        ['Eva PASCAPTER', 'Star 5G', 'eva.pascapter@phonephone.call'],
+        ['Sarah CROCHE', 'Say Allo', 'sarah-croche@phonephone.call'],
+        ['Ella PLUDBATRIE', 'Socket Finder', 'ella-plusbatrie@phonephone.call'],
+    ];
+
+    /**
      * Load fixtures in ClientUser table.
      *
      * @param ObjectManager $manager
@@ -25,115 +43,28 @@ class ClientUserFixtures extends Fixture implements DependentFixtureInterface
      */
     public function load(ObjectManager $manager): void
     {
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Jean TENDBIEN')
-            ->setUsername('The Listener')
-            ->setEmail('jeantendbien@bubble.com')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'1')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Marie SMARTPHONE')
-            ->setUsername('Pink Lady')
-            ->setEmail('marie.smartphone@bubble.com')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'1')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Paul TALKER')
-            ->setUsername('Fast Caller')
-            ->setEmail('paul-talker@bubble.com')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'1')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Jacques ADIT')
-            ->setUsername('DIY')
-            ->setEmail('jacques.adit@lovely-panda.fr')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Tom BALEAU')
-            ->setUsername('The Waterproof')
-            ->setEmail('tombaleau@lovely-panda.fr')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Iphigénie FILAIRE')
-            ->setUsername('WifiGenius')
-            ->setEmail('iphigenie.filaire@lovely-panda.fr')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Ray ZO')
-            ->setUsername('The Connected')
-            ->setEmail('ray-zo@lovely-panda.fr')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Eva PASCAPTER')
-            ->setUsername('Star 5G')
-            ->setEmail('eva.pascapter@phonephone.call')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'3')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Sarah CROCHE')
-            ->setUsername('Say Allo')
-            ->setEmail('sarah-croche@phonephone.call')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'3')
-            )
-        ;
-        $manager->persist($clientUser);
-
-        $clientUser = new ClientUser();
-        $clientUser
-            ->setName('Ella PLUDBATRIE')
-            ->setUsername('Socket Finder')
-            ->setEmail('ella-plusbatrie@phonephone.call')
-            ->setClient(
-                $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'3')
-            )
-        ;
-        $manager->persist($clientUser);
+        foreach ($this->samples as $key => $sample) {
+            $clientUser = new ClientUser();
+            $clientUser
+                ->setName($sample[0])
+                ->setUsername($sample[1])
+                ->setEmail($sample[2])
+            ;
+            if ($key <= 2) {
+                $clientUser->setClient(
+                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'1')
+                );
+            } elseif ($key > 2 && $key <=6 ) {
+                $clientUser->setClient(
+                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'2')
+                );
+            } elseif ($key > 6) {
+                $clientUser->setClient(
+                    $this->getReference(ClientFixtures::CLIENT_REFERENCE_PREFIX.'3')
+                );
+            }
+            $manager->persist($clientUser);
+        }
 
         $manager->flush();
     }

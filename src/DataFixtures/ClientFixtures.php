@@ -23,6 +23,17 @@ class ClientFixtures extends Fixture
     public const CLIENT_REFERENCE_PREFIX = 'client_';
 
     /**
+     * An array that represents data samples to load.
+     *
+     * @var array[]
+     */
+    private $samples = [
+        ['Bubble PhoneShop', 'contact@bubble.com'],
+        ['PandaKing Smartphone', 'contact@lovely-panda.fr'],
+        ['PhonePhone Palace', 'contact@phonephone.call'],
+    ];
+
+    /**
      * Load fixtures in Client table.
      *
      * @param ObjectManager $manager
@@ -31,29 +42,15 @@ class ClientFixtures extends Fixture
      */
     public function load(ObjectManager $manager): void
     {
-        $client = new Client();
-        $client
-            ->setName('Bubble PhoneShop')
-            ->setEmail('contact@bubble.com')
-        ;
-        $manager->persist($client);
-        $this->addReference(self::CLIENT_REFERENCE_PREFIX.'1', $client);
-
-        $client = new Client();
-        $client
-            ->setName('PandaKing Smartphone')
-            ->setEmail('contact@lovely-panda.fr')
-        ;
-        $manager->persist($client);
-        $this->addReference(self::CLIENT_REFERENCE_PREFIX.'2', $client);
-
-        $client = new Client();
-        $client
-            ->setName('PhonePhone Palace')
-            ->setEmail('contact@phonephone.call')
-        ;
-        $manager->persist($client);
-        $this->addReference(self::CLIENT_REFERENCE_PREFIX.'3', $client);
+        foreach ($this->samples as $key => $sample) {
+            $client = new Client();
+            $client
+                ->setName($sample[0])
+                ->setEmail($sample[1])
+            ;
+            $manager->persist($client);
+            $this->addReference(self::CLIENT_REFERENCE_PREFIX.($key + 1), $client);
+        }
 
         $manager->flush();
     }
