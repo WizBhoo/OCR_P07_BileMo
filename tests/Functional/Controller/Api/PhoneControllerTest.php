@@ -4,7 +4,7 @@
  * (c) Adrien PIERRARD
  */
 
-namespace App\Tests\Functional\Controller\Rest;
+namespace App\Tests\Functional\Controller\Api;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,10 +76,6 @@ class PhoneControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->request('GET', self::PHONES_LIST_URI.'/'.self::PHONE_ID);
-
-        $content = $client->getResponse()->getContent();
-        $content = json_decode($content, true);
-        $this->assertEquals('Phone with id '.self::PHONE_ID.' does not exists !', $content['message']);
 
         $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
     }

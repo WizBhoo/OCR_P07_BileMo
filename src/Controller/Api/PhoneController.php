@@ -4,11 +4,10 @@
  * (c) Adrien PIERRARD
  */
 
-namespace App\Controller\Rest;
+namespace App\Controller\Api;
 
 use App\Entity\Phone;
 use App\Manager\PhoneManager;
-use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Swagger\Annotations as SWG;
@@ -69,23 +68,12 @@ class PhoneController extends AbstractFOSRestController
      *     description = "The Phone does not exists"
      * )
      *
-     * @param PhoneManager $phoneManager
-     * @param Int          $id
+     * @param Phone $phone
      *
      * @return Phone
-     *
-     * @throws EntityNotFoundException
      */
-    public function getPhone(PhoneManager $phoneManager, int $id): Phone
+    public function getPhone(Phone $phone): Phone
     {
-        $phone = $phoneManager->findPhone($id);
-
-        if (!$phone) {
-            throw new EntityNotFoundException(
-                'Phone with id '.$id.' does not exists !'
-            );
-        }
-
         return $phone;
     }
 }
