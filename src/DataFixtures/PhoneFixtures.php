@@ -25,16 +25,14 @@ class PhoneFixtures extends Fixture
             'Apple',
             'iPhone 11 Pro Max',
             'Gold',
-            'Capabilities of this iPhone are such that it is 
-            the first to earn the Pro designation ! And he deserves it !',
+            'Capabilities of this iPhone are such that it is the first to earn the Pro designation ! And he deserves it !',
             1658.99
         ],
         [
             'Apple',
             'iPhone 11 Pro Max',
             'Midnight Green',
-            'Capabilities of this iPhone are such that it is 
-            the first to earn the Pro designation ! And he deserves it !',
+            'Capabilities of this iPhone are such that it is the first to earn the Pro designation ! And he deserves it !',
             1658.99
         ],
         [
@@ -55,8 +53,7 @@ class PhoneFixtures extends Fixture
             'PhoneToPhone Like a Panda',
             'Universe Ultra Lux Max Pro 8G',
             'Rough Diamond',
-            'Finally a smartphone that knows that its primary 
-            function is to make calls before everything else !',
+            'Finally a smartphone that knows that its primary function is to make calls before everything else !',
             2499.99
         ],
     ];
