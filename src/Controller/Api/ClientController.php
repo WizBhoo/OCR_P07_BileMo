@@ -23,7 +23,7 @@ use Swagger\Annotations as SWG;
 class ClientController extends AbstractFOSRestController
 {
     /**
-     * Retrieves a collection of User resource linked to a Client
+     * Retrieves a collection of User resource who belong to a Client
      *
      * @Rest\Get(
      *     path = "/clients/{id}/users",
@@ -47,7 +47,7 @@ class ClientController extends AbstractFOSRestController
      * )
      * @SWG\Response(
      *     response = 404,
-     *     description = "The Client does not exists"
+     *     description = "The Client does not exist"
      * )
      *
      * @param Client $client
@@ -60,7 +60,7 @@ class ClientController extends AbstractFOSRestController
     }
 
     /**
-     * Retrieves details of a User resource linked to a Client
+     * Retrieves details of a User resource who belongs to a Client
      *
      * @Rest\Get(
      *     path = "/clients/{clientId}/users/{userId}",
@@ -93,7 +93,7 @@ class ClientController extends AbstractFOSRestController
      * )
      * @SWG\Response(
      *     response = 404,
-     *     description = "Client or User does not exists"
+     *     description = "Client or User does not exist"
      * )
      *
      * @param Client $client
@@ -107,7 +107,7 @@ class ClientController extends AbstractFOSRestController
     {
         if ($clientUser->getClient() !== $client) {
             throw new EntityNotFoundException(
-                "User with id ".$clientUser->getId()." does not exits under Client with id ".$client->getId()
+                "User with id ".$clientUser->getId()." does not belong to Client with id ".$client->getId()
             );
         }
 

@@ -22,7 +22,7 @@ class PhoneControllerTest extends WebTestCase
     const PHONES_LIST_URI = '/api/phones';
 
     /**
-     * A constant that represent a phone that does not exists
+     * A constant that represent a phone that does not exist
      *
      * @var int
      */
@@ -68,7 +68,7 @@ class PhoneControllerTest extends WebTestCase
     }
 
     /**
-     * Test get details of a phone that does not exists
+     * Test get details of a phone that does not exist
      *
      * @return void
      */
