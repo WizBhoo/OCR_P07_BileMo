@@ -40,7 +40,7 @@ class PhoneController extends AbstractFOSRestController
      */
     public function getPhones(PhoneManager $phoneManager): ?array
     {
-        return $phones = $phoneManager->findAllPhone();
+        return $phoneManager->findAllPhone();
     }
 
     /**
