@@ -10,6 +10,7 @@ use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Entity Class Client.
@@ -21,6 +22,7 @@ class Client
     /**
      * @var int
      *
+     * @Groups("client")
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -30,6 +32,7 @@ class Client
     /**
      * @var string
      *
+     * @Groups("client")
      * @ORM\Column(type="string", length=30, unique=true)
      */
     private $name;
@@ -37,6 +40,7 @@ class Client
     /**
      * @var string
      *
+     * @Groups("client")
      * @ORM\Column(type="string", length=100, unique=true)
      */
     private $email;
@@ -44,6 +48,7 @@ class Client
     /**
      * @var ArrayCollection
      *
+     * @Groups("client_users")
      * @ORM\OneToMany(targetEntity=ClientUser::class, mappedBy="client", orphanRemoval=true)
      */
     private $clientUsers;
