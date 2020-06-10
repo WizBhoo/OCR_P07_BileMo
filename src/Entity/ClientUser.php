@@ -23,7 +23,7 @@ class ClientUser
     /**
      * @var int
      *
-     * @Groups("user")
+     * @Groups({"user_details", "user_list"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -41,7 +41,7 @@ class ClientUser
     /**
      * @var string
      *
-     * @Groups("user")
+     * @Groups({"user_details", "user_list"})
      * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank(message="You must add a name")

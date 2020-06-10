@@ -35,7 +35,7 @@ class ClientUserController extends AbstractFOSRestController
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View(
-     *     serializerGroups={"client", "user"}
+     *     serializerGroups={"client", "user_list"}
      * )
      *
      * @SWG\Parameter(
@@ -75,7 +75,7 @@ class ClientUserController extends AbstractFOSRestController
      *     requirements = {"clientId"="\d+", "userId"="\d+"}
      * )
      * @Rest\View(
-     *     serializerGroups={"client", "user", "user_details"}
+     *     serializerGroups={"client", "user_details"}
      * )
      * @ParamConverter(
      *     "client", options={"id" = "clientId"}

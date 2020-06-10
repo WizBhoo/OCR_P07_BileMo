@@ -48,7 +48,6 @@ class Client
     /**
      * @var ArrayCollection
      *
-     * @Groups("client_users")
      * @ORM\OneToMany(targetEntity=ClientUser::class, mappedBy="client", orphanRemoval=true)
      */
     private $clientUsers;
