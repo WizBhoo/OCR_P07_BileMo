@@ -15,12 +15,14 @@ use Swagger\Annotations as SWG;
 /**
  * Class PhoneController.
  *
- * @SWG\Tag(name="Phone")
+ * @SWG\Tag(name="Phones")
  */
 class PhoneController extends AbstractFOSRestController
 {
     /**
      * Retrieves a collection of Phone resource
+     *
+     * @param PhoneManager $phoneManager
      *
      * @Rest\Get(
      *     path = "/phones",
@@ -33,8 +35,6 @@ class PhoneController extends AbstractFOSRestController
      *     description = "Get the Phones list with success"
      * )
      *
-     * @param PhoneManager $phoneManager
-     *
      * @return Phone[]|null
      */
     public function getPhones(PhoneManager $phoneManager): ?array
@@ -44,6 +44,8 @@ class PhoneController extends AbstractFOSRestController
 
     /**
      * Retrieves a Phone resource
+     *
+     * @param Phone $phone
      *
      * @Rest\Get(
      *     path = "/phones/{id}",
@@ -67,8 +69,6 @@ class PhoneController extends AbstractFOSRestController
      *     response = 404,
      *     description = "The Phone does not exist"
      * )
-     *
-     * @param Phone $phone
      *
      * @return Phone
      */
