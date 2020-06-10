@@ -16,18 +16,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 
 /**
- * Class ClientController.
+ * Class ClientUserController.
  *
  * @SWG\Tag(name="Client Users")
  */
-class ClientController extends AbstractFOSRestController
+class ClientUserController extends AbstractFOSRestController
 {
     /**
      * Retrieves a collection of User resource who belong to a Client
      *
+     * @param Client $client
+     *
+     * @return Collection|null
+     *
      * @Rest\Get(
      *     path = "/clients/{id}/users",
-     *     name = "api_client_users",
+     *     name = "api_client_users_list",
      *     requirements = {"id"="\d+"}
      * )
      * @Rest\View(
@@ -49,10 +53,6 @@ class ClientController extends AbstractFOSRestController
      *     response = 404,
      *     description = "The Client does not exist"
      * )
-     *
-     * @param Client $client
-     *
-     * @return Collection|null
      */
     public function getClientUsers(Client $client): ?Collection
     {
@@ -62,16 +62,27 @@ class ClientController extends AbstractFOSRestController
     /**
      * Retrieves details of a User resource who belongs to a Client
      *
+     * @param Client     $client
+     * @param ClientUser $clientUser
+     *
+     * @return ClientUser|null
+     *
+     * @throws EntityNotFoundException
+     *
      * @Rest\Get(
      *     path = "/clients/{clientId}/users/{userId}",
-     *     name = "api_client_user",
+     *     name = "api_client_user_details",
      *     requirements = {"clientId"="\d+", "userId"="\d+"}
      * )
      * @Rest\View(
      *     serializerGroups={"client", "user", "user_details"}
      * )
-     * @ParamConverter("client", options={"id" = "clientId"})
-     * @ParamConverter("clientUser", options={"id" = "userId"})
+     * @ParamConverter(
+     *     "client", options={"id" = "clientId"}
+     * )
+     * @ParamConverter(
+     *     "clientUser", options={"id" = "userId"}
+     * )
      *
      * @SWG\Parameter(
      *     name="clientId",
@@ -93,21 +104,14 @@ class ClientController extends AbstractFOSRestController
      * )
      * @SWG\Response(
      *     response = 404,
-     *     description = "Client or User does not exist"
+     *     description = "Wrong User and/or Client"
      * )
-     *
-     * @param Client $client
-     * @param ClientUser $clientUser
-     *
-     * @return ClientUser|null
-     *
-     * @throws EntityNotFoundException
      */
     public function getClientUserDetails(Client $client, ClientUser $clientUser): ?ClientUser
     {
         if ($clientUser->getClient() !== $client) {
             throw new EntityNotFoundException(
-                "User with id ".$clientUser->getId()." does not belong to Client with id ".$client->getId()
+                "Wrong User and/or Client"
             );
         }
 

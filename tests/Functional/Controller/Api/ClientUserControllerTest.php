@@ -10,9 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class ClientControllerTest.
+ * Class ClientUserControllerTest.
  */
-class ClientControllerTest extends WebTestCase
+class ClientUserControllerTest extends WebTestCase
 {
     /**
      * A constant that represent a tested URI
