@@ -9,6 +9,7 @@ namespace App\Entity;
 use App\Repository\ClientUserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -22,6 +23,7 @@ class ClientUser
     /**
      * @var int
      *
+     * @Groups({"user_details", "user_list"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -39,6 +41,7 @@ class ClientUser
     /**
      * @var string
      *
+     * @Groups({"user_details", "user_list"})
      * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank(message="You must add a name")
@@ -55,6 +58,7 @@ class ClientUser
     /**
      * @var string
      *
+     * @Groups("user_details")
      * @ORM\Column(type="string", length=30, unique=true)
      *
      * @Assert\NotBlank(message="You must add a username")
@@ -71,6 +75,7 @@ class ClientUser
     /**
      * @var string
      *
+     * @Groups("user_details")
      * @ORM\Column(type="string", length=100, unique=true)
      *
      * @Assert\NotBlank(message="You must enter an email")

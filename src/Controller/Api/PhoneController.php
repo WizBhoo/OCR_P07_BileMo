@@ -65,7 +65,7 @@ class PhoneController extends AbstractFOSRestController
      * )
      * @SWG\Response(
      *     response = 404,
-     *     description = "The Phone does not exists"
+     *     description = "The Phone does not exist"
      * )
      *
      * @param Phone $phone

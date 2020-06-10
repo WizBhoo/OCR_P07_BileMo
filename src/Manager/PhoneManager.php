@@ -40,16 +40,4 @@ class PhoneManager
     {
         return $this->phoneRepository->findAll();
     }
-
-    /**
-     * Retrieve a phone from db
-     *
-     * @param Int $id
-     *
-     * @return Phone|null
-     */
-    public function findPhone(Int $id): ?Phone
-    {
-        return $this->phoneRepository->find($id);
-    }
 }
