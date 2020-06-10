@@ -35,6 +35,8 @@ class ClientUserManager
     }
 
     /**
+     * Create a new User in DB who belongs to a Client
+     *
      * @param Client     $client
      * @param ClientUser $clientUser
      *
@@ -47,5 +49,20 @@ class ClientUserManager
     {
         $client->addClientUser($clientUser);
         $this->clientUserRepository->create($clientUser);
+    }
+
+    /**
+     * Delete a User in DB who belongs to a Client
+     *
+     * @param ClientUser $clientUser
+     *
+     * @return void
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function deleteClientUser(ClientUser $clientUser): void
+    {
+        $this->clientUserRepository->delete($clientUser);
     }
 }

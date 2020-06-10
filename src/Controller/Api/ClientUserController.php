@@ -113,14 +113,14 @@ class ClientUserController extends AbstractFOSRestController
      * )
      * @SWG\Response(
      *     response = 404,
-     *     description = "Wrong User and/or Client"
+     *     description = "User and/or Client not found"
      * )
      */
     public function getClientUserDetails(Client $client, ClientUser $clientUser): ?ClientUser
     {
         if ($clientUser->getClient() !== $client) {
             throw new EntityNotFoundException(
-                "Wrong User and/or Client"
+                "User and/or Client not found"
             );
         }
 
@@ -162,7 +162,7 @@ class ClientUserController extends AbstractFOSRestController
      *     required=true
      * )
      * @SWG\Parameter(
-     *     name="body",
+     *     name="New User",
      *     in="body",
      *     description="List of User properties",
      *     required=true,
@@ -208,5 +208,64 @@ class ClientUserController extends AbstractFOSRestController
                     UrlGeneratorInterface::ABSOLUTE_URL)
             ]
         );
+    }
+
+    /**
+     * Delete a User resource belonging to the Client who deletes him
+     *
+     * @param Client            $client
+     * @param ClientUser        $clientUser
+     * @param ClientUserManager $clientUserManager
+     *
+     * @throws EntityNotFoundException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     *
+     * @Rest\Delete(
+     *     path = "/clients/{clientId}/users/{userId}",
+     *     name = "api_client_user_delete",
+     *     requirements = {"clientId"="\d+", "userId"="\d+"}
+     * )
+     * @Rest\View(
+     *     statusCode = 204,
+     * )
+     * @ParamConverter(
+     *     "client", options={"id" = "clientId"}
+     * )
+     * @ParamConverter(
+     *     "clientUser", options={"id" = "userId"}
+     * )
+     *
+     * @SWG\Parameter(
+     *     name="clientId",
+     *     in="path",
+     *     type="integer",
+     *     description="A unique client identifier",
+     *     required=true
+     * )
+     * @SWG\Parameter(
+     *     name="userId",
+     *     in="path",
+     *     type="integer",
+     *     description="User's identifier to delete",
+     *     required=true
+     * )
+     * @SWG\Response(
+     *     response = 204,
+     *     description = "User successfully deleted"
+     * )
+     * @SWG\Response(
+     *     response = 404,
+     *     description = "User and/or Client not found"
+     * )
+     */
+    public function deleteClientUser(Client $client, ClientUser $clientUser, ClientUserManager $clientUserManager): void
+    {
+        if ($clientUser->getClient() !== $client) {
+            throw new EntityNotFoundException(
+                "User and/or Client not found"
+            );
+        }
+        $clientUserManager->deleteClientUser($clientUser);
     }
 }
