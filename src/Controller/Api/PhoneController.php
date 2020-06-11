@@ -24,18 +24,30 @@ class PhoneController extends AbstractFOSRestController
      *
      * @param PhoneManager $phoneManager
      *
+     * @return Phone[]|null
+     *
      * @Rest\Get(
      *     path = "/phones",
      *     name = "api_phones_list",
      * )
      * @Rest\View
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer JWT",
+     *     description="Token required to request resources"
+     * )
      * @SWG\Response(
      *     response = 200,
-     *     description = "Get the Phones list with success"
+     *     description = "Get the Phones list with success",
      * )
-     *
-     * @return Phone[]|null
+     * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
      */
     public function getPhones(PhoneManager $phoneManager): ?array
     {
@@ -47,6 +59,8 @@ class PhoneController extends AbstractFOSRestController
      *
      * @param Phone $phone
      *
+     * @return Phone
+     *
      * @Rest\Get(
      *     path = "/phones/{id}",
      *     name = "api_phone_details",
@@ -54,6 +68,14 @@ class PhoneController extends AbstractFOSRestController
      * )
      * @Rest\View
      *
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     required=true,
+     *     type="string",
+     *     default="Bearer JWT",
+     *     description="Token required to request resources"
+     * )
      * @SWG\Parameter(
      *     name="id",
      *     in="path",
@@ -66,11 +88,13 @@ class PhoneController extends AbstractFOSRestController
      *     description = "Get a Phone details with success"
      * )
      * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
      *     response = 404,
      *     description = "The Phone does not exist"
      * )
-     *
-     * @return Phone
      */
     public function getPhone(Phone $phone): Phone
     {

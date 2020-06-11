@@ -6,6 +6,14 @@ nelmio_api_doc:
             title: BileMo - API REST
             description: An hightech smartphone selection !
             version: 1.0.0
+        securityDefinitions:
+            Bearer:
+                type: apiKey
+                description: 'Value: Bearer JWT'
+                name: Authorization
+                in: header
+        security:
+            - Bearer: []
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
