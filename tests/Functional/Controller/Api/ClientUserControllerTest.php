@@ -6,6 +6,8 @@
 
 namespace App\Tests\Functional\Controller\Api;
 
+use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,21 +45,48 @@ class ClientUserControllerTest extends WebTestCase
     const BAD_USER_ID = 9;
 
     /**
+     * Helper to access test Client
+     *
+     * @var KernelBrowser
+     */
+    private $client;
+
+    /**
+     * An ORM EntityManager Instance
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * Set up a client for test and the EntityManager
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        $this->client = $this->createClient(['environment' => 'test']);
+        $this->entityManager = $this->client->getContainer()
+            ->get('doctrine')
+            ->getManager();
+        $this->entityManager->beginTransaction();
+    }
+
+    /**
      * Test get users who belong to a client
      *
      * @return void
      */
     public function testGetUsersList(): void
     {
-        $client = static::createClient();
-        $client->request('GET', self::USERS_LIST_URI);
+        $this->client->request('GET', self::USERS_LIST_URI);
 
-        $content = $client->getResponse()->getContent();
+        $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
 
         $this->assertCount(4, $content);
 
-        $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -67,17 +96,16 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetExistingUser(): void
     {
-        $client = static::createClient();
-        $client->request('GET', self::USERS_LIST_URI.'/'.self::USER_ID);
+        $this->client->request('GET', self::USERS_LIST_URI.'/'.self::USER_ID);
 
-        $content = $client->getResponse()->getContent();
+        $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
         $this->assertArrayHasKey('name', $content);
         $this->assertArrayHasKey('username', $content);
         $this->assertArrayHasKey('email', $content);
         $this->assertArrayNotHasKey('color', $content);
 
-        $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
     /**
@@ -87,9 +115,92 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetWrongUser(): void
     {
-        $client = static::createClient();
-        $client->request('GET', self::USERS_LIST_URI.'/'.self::BAD_USER_ID);
+        $this->client->request('GET', self::USERS_LIST_URI.'/'.self::BAD_USER_ID);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Test post to create a new user who belong to a client
+     *
+     * @return void
+     */
+    public function testPostUser(): void
+    {
+        $user =
+            [
+                "name" => "Ja TEST",
+                "username" => "The Guinea Pig",
+                "email" => "ja.test@lovely-panda.fr"
+            ]
+        ;
+
+        $this->client->request('POST', self::USERS_LIST_URI, [], [], ['CONTENT_TYPE'=>'application/json'], json_encode($user));
+        $content = $this->client->getResponse()->getContent();
+        $this->assertJson($content);
+
+        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Test violations when trying to create a user who belong to a client
+     *
+     * @return void
+     */
+    public function testPostInvalidUser(): void
+    {
+        $user =
+            [
+                "name" => "Bad User",
+                "username" => "KO",
+                "email" => "bad.user@violations.com"
+            ]
+        ;
+
+        $this->client->request('POST', self::USERS_LIST_URI, [], [], ['CONTENT_TYPE'=>'application/json'], json_encode($user));
+        $content = $this->client->getResponse()->getContent();
+        $this->assertJson($content);
+        $content = json_decode($content, true);
+        $this->assertArrayHasKey('message', $content);
+
+        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Test delete of an existing user who belongs to a client
+     *
+     * @return void
+     */
+    public function testDeleteExistingUser(): void
+    {
+        $this->client->request('DELETE', self::USERS_LIST_URI.'/'.self::USER_ID);
+
+        $this->assertSame(Response::HTTP_NO_CONTENT, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Test delete of a user who does not belong to a client
+     *
+     * @return void
+     */
+    public function testDeleteWrongUser(): void
+    {
+        $this->client->request('DELETE', self::USERS_LIST_URI.'/'.self::BAD_USER_ID);
+
+        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * Called after each test using entityManager to avoid memory leaks
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->entityManager->rollback();
+        $this->entityManager->close();
+        $this->entityManager = null;
     }
 }

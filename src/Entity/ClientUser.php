@@ -16,7 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Entity Class ClientUser.
  *
  * @ORM\Entity(repositoryClass=ClientUserRepository::class)
- * @UniqueEntity(fields={"email"}, message="This ClientUser already exists")
+ * @UniqueEntity(fields={"email"}, message="Choose another email")
+ * @UniqueEntity(fields={"username"}, message="Choose another username")
  */
 class ClientUser
 {

@@ -5,6 +5,8 @@ fos_rest:
     body_listener: true
     body_converter:
       enabled: true
+      validate: true
+      validation_errors_argument: violations
     serializer:
       serialize_null: true
     view:
@@ -18,5 +20,9 @@ fos_rest:
         exception_controller: 'fos_rest.exception.controller:showAction'
         codes:
             Doctrine\ORM\EntityNotFoundException: 404
+            App\Exception\ResourceValidationException: 400
+            App\Exception\ForbiddenException: 403
         messages:
             Doctrine\ORM\EntityNotFoundException: true
+            App\Exception\ResourceValidationException: true
+            App\Exception\ForbiddenException: true
