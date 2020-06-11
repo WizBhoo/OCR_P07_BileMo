@@ -8,6 +8,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Client;
 use App\Entity\ClientUser;
+use App\Exception\ForbiddenException;
 use App\Exception\ResourceValidationException;
 use App\Manager\ClientUserManager;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +21,7 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -76,7 +78,7 @@ class ClientUserController extends AbstractFOSRestController
      *
      * @return ClientUser|null
      *
-     * @throws EntityNotFoundException
+     * @throws ForbiddenException
      *
      * @Rest\Get(
      *     path = "/clients/{clientId}/users/{userId}",
@@ -112,6 +114,10 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "Get a Client Users list with success"
      * )
      * @SWG\Response(
+     *     response = 403,
+     *     description = "Forbidden access to this content"
+     * )
+     * @SWG\Response(
      *     response = 404,
      *     description = "User and/or Client not found"
      * )
@@ -119,8 +125,8 @@ class ClientUserController extends AbstractFOSRestController
     public function getClientUserDetails(Client $client, ClientUser $clientUser): ?ClientUser
     {
         if ($clientUser->getClient() !== $client) {
-            throw new EntityNotFoundException(
-                "User and/or Client not found"
+            throw new ForbiddenException(
+                "Forbidden access to this content"
             );
         }
 
@@ -217,7 +223,7 @@ class ClientUserController extends AbstractFOSRestController
      * @param ClientUser        $clientUser
      * @param ClientUserManager $clientUserManager
      *
-     * @throws EntityNotFoundException
+     * @throws ForbiddenException
      * @throws ORMException
      * @throws OptimisticLockException
      *
@@ -255,6 +261,10 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "User successfully deleted"
      * )
      * @SWG\Response(
+     *     response = 403,
+     *     description = "Forbidden access to this content"
+     * )
+     * @SWG\Response(
      *     response = 404,
      *     description = "User and/or Client not found"
      * )
@@ -262,8 +272,8 @@ class ClientUserController extends AbstractFOSRestController
     public function deleteClientUser(Client $client, ClientUser $clientUser, ClientUserManager $clientUserManager): void
     {
         if ($clientUser->getClient() !== $client) {
-            throw new EntityNotFoundException(
-                "User and/or Client not found"
+            throw new ForbiddenException(
+                "Forbidden access to this content"
             );
         }
         $clientUserManager->deleteClientUser($clientUser);

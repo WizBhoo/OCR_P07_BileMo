@@ -21,6 +21,8 @@ fos_rest:
         codes:
             Doctrine\ORM\EntityNotFoundException: 404
             App\Exception\ResourceValidationException: 400
+            App\Exception\ForbiddenException: 403
         messages:
             Doctrine\ORM\EntityNotFoundException: true
             App\Exception\ResourceValidationException: true
+            App\Exception\ForbiddenException: true

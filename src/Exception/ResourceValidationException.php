@@ -6,11 +6,9 @@
 
 namespace App\Exception;
 
-use Exception;
-
 /**
  * Class ResourceValidationException.
  */
-class ResourceValidationException extends Exception
+class ResourceValidationException extends \RuntimeException
 {
 }
