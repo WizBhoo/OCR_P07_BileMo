@@ -36,13 +36,26 @@ class PhoneControllerTest extends WebTestCase
     public function testGetPhonesList(): void
     {
         $client = static::createClient();
-        $client->request('GET', self::PHONES_LIST_URI);
+        $data = array('username' => 'contact@bubble.com');
+        $token = $client->getContainer()
+            ->get('lexik_jwt_authentication.encoder')
+            ->encode($data);
+
+        $client->request(
+            'GET',
+            self::PHONES_LIST_URI,
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+        );
 
         $content = $client->getResponse()->getContent();
         $content = json_decode($content, true);
         $this->assertCount(5, $content);
-
-        $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_OK,
+            $client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -53,7 +66,18 @@ class PhoneControllerTest extends WebTestCase
     public function testGetExistingPhone(): void
     {
         $client = static::createClient();
-        $client->request('GET', self::PHONES_LIST_URI.'/3');
+        $data = array('username' => 'contact@bubble.com');
+        $token = $client->getContainer()
+            ->get('lexik_jwt_authentication.encoder')
+            ->encode($data);
+
+        $client->request(
+            'GET',
+            self::PHONES_LIST_URI.'/3',
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+        );
 
         $content = $client->getResponse()->getContent();
         $content = json_decode($content, true);
@@ -63,8 +87,10 @@ class PhoneControllerTest extends WebTestCase
         $this->assertArrayHasKey('description', $content);
         $this->assertArrayHasKey('price', $content);
         $this->assertArrayNotHasKey('email', $content);
-
-        $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_OK,
+            $client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -75,8 +101,21 @@ class PhoneControllerTest extends WebTestCase
     public function testGetWrongPhone(): void
     {
         $client = static::createClient();
-        $client->request('GET', self::PHONES_LIST_URI.'/'.self::PHONE_ID);
+        $data = array('username' => 'contact@bubble.com');
+        $token = $client->getContainer()
+            ->get('lexik_jwt_authentication.encoder')
+            ->encode($data);
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        $client->request(
+            'GET',
+            self::PHONES_LIST_URI.'/'.self::PHONE_ID,
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+        );
+        $this->assertSame(
+            Response::HTTP_NOT_FOUND,
+            $client->getResponse()->getStatusCode()
+        );
     }
 }
