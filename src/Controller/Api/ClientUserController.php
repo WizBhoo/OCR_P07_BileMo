@@ -12,7 +12,6 @@ use App\Exception\ForbiddenException;
 use App\Exception\ResourceValidationException;
 use App\Manager\ClientUserManager;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -21,7 +20,6 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -61,12 +59,25 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "Get a Client Users list with success"
      * )
      * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
+     *     response = 403,
+     *     description = "Forbidden access to this content"
+     * )
+     * @SWG\Response(
      *     response = 404,
      *     description = "The Client does not exist"
      * )
      */
     public function getClientUsers(Client $client): ?Collection
     {
+        if ($this->getUser()->getUsername() !== $client->getEmail()) {
+            throw new ForbiddenException(
+                "Forbidden access to this content"
+            );
+        }
         return $client->getClientUsers();
     }
 
@@ -114,6 +125,10 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "Get a Client Users list with success"
      * )
      * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
      *     response = 403,
      *     description = "Forbidden access to this content"
      * )
@@ -124,7 +139,9 @@ class ClientUserController extends AbstractFOSRestController
      */
     public function getClientUserDetails(Client $client, ClientUser $clientUser): ?ClientUser
     {
-        if ($clientUser->getClient() !== $client) {
+        if ($this->getUser()->getUsername() !== $client->getEmail()
+            || $clientUser->getClient() !== $client
+        ) {
             throw new ForbiddenException(
                 "Forbidden access to this content"
             );
@@ -188,13 +205,31 @@ class ClientUserController extends AbstractFOSRestController
      *     response = 400,
      *     description = "Bad data sent, check fields and try again"
      * )
+     * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
+     *     response = 403,
+     *     description = "Forbidden access to this content"
+     * )
      */
     public function createClientUser(Client $client, ClientUser $clientUser, ClientUserManager $clientUserManager, ConstraintViolationList $violations): View
     {
+        if ($this->getUser()->getUsername() !== $client->getEmail()) {
+            throw new ForbiddenException(
+                "Forbidden access to this content"
+            );
+        }
+
         if (count($violations)) {
             $message = "Wrong data sent, please correct following fields : ";
             foreach ($violations as $violation) {
-                $message .= sprintf("Filed %s : %s ", $violation->getPropertyPath(), $violation->getMessage());
+                $message .= sprintf(
+                    "Filed %s : %s ",
+                    $violation->getPropertyPath(),
+                    $violation->getMessage()
+                );
             }
 
             throw new ResourceValidationException($message);
@@ -211,7 +246,8 @@ class ClientUserController extends AbstractFOSRestController
                         'clientId' => $client->getId(),
                         'userId' => $clientUser->getId()
                     ],
-                    UrlGeneratorInterface::ABSOLUTE_URL)
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                )
             ]
         );
     }
@@ -222,6 +258,8 @@ class ClientUserController extends AbstractFOSRestController
      * @param Client            $client
      * @param ClientUser        $clientUser
      * @param ClientUserManager $clientUserManager
+     *
+     * @return void
      *
      * @throws ForbiddenException
      * @throws ORMException
@@ -261,6 +299,10 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "User successfully deleted"
      * )
      * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
      *     response = 403,
      *     description = "Forbidden access to this content"
      * )
@@ -271,7 +313,9 @@ class ClientUserController extends AbstractFOSRestController
      */
     public function deleteClientUser(Client $client, ClientUser $clientUser, ClientUserManager $clientUserManager): void
     {
-        if ($clientUser->getClient() !== $client) {
+        if ($this->getUser()->getUsername() !== $client->getEmail()
+            || $clientUser->getClient() !== $client
+        ) {
             throw new ForbiddenException(
                 "Forbidden access to this content"
             );

@@ -24,6 +24,8 @@ class PhoneController extends AbstractFOSRestController
      *
      * @param PhoneManager $phoneManager
      *
+     * @return Phone[]|null
+     *
      * @Rest\Get(
      *     path = "/phones",
      *     name = "api_phones_list",
@@ -32,10 +34,12 @@ class PhoneController extends AbstractFOSRestController
      *
      * @SWG\Response(
      *     response = 200,
-     *     description = "Get the Phones list with success"
+     *     description = "Get the Phones list with success",
      * )
-     *
-     * @return Phone[]|null
+     * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
      */
     public function getPhones(PhoneManager $phoneManager): ?array
     {
@@ -46,6 +50,8 @@ class PhoneController extends AbstractFOSRestController
      * Retrieves a Phone resource
      *
      * @param Phone $phone
+     *
+     * @return Phone
      *
      * @Rest\Get(
      *     path = "/phones/{id}",
@@ -66,11 +72,13 @@ class PhoneController extends AbstractFOSRestController
      *     description = "Get a Phone details with success"
      * )
      * @SWG\Response(
+     *     response = 401,
+     *     description = "You need a valid token to access this request"
+     * )
+     * @SWG\Response(
      *     response = 404,
      *     description = "The Phone does not exist"
      * )
-     *
-     * @return Phone
      */
     public function getPhone(Phone $phone): Phone
     {

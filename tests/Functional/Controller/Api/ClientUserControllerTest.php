@@ -6,8 +6,8 @@
 
 namespace App\Tests\Functional\Controller\Api;
 
+use App\Tests\Functional\AuthenticationTrait;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ClientUserControllerTest extends WebTestCase
 {
+    use AuthenticationTrait;
+
     /**
      * A constant that represent a tested URI
      *
@@ -45,13 +47,6 @@ class ClientUserControllerTest extends WebTestCase
     const BAD_USER_ID = 9;
 
     /**
-     * Helper to access test Client
-     *
-     * @var KernelBrowser
-     */
-    private $client;
-
-    /**
      * An ORM EntityManager Instance
      *
      * @var EntityManager
@@ -79,14 +74,39 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetUsersList(): void
     {
-        $this->client->request('GET', self::USERS_LIST_URI);
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'GET',
+            self::USERS_LIST_URI
+        );
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
 
         $this->assertCount(4, $content);
+        $this->assertSame(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
+    }
 
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    /**
+     * Test get users who does not belong to client requester (bad token)
+     *
+     * @return void
+     */
+    public function testGetUsersBadToken(): void
+    {
+        $this->requestAuthenticated(
+            'contact@bubble.com',
+            'GET',
+            self::USERS_LIST_URI
+        );
+
+        $this->assertSame(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -96,16 +116,23 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetExistingUser(): void
     {
-        $this->client->request('GET', self::USERS_LIST_URI.'/'.self::USER_ID);
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'GET',
+            self::USERS_LIST_URI.'/'.self::USER_ID
+        );
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
+
         $this->assertArrayHasKey('name', $content);
         $this->assertArrayHasKey('username', $content);
         $this->assertArrayHasKey('email', $content);
         $this->assertArrayNotHasKey('color', $content);
-
-        $this->assertSame(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -115,9 +142,16 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetWrongUser(): void
     {
-        $this->client->request('GET', self::USERS_LIST_URI.'/'.self::BAD_USER_ID);
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'GET',
+            self::USERS_LIST_URI.'/'.self::BAD_USER_ID
+        );
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -127,19 +161,48 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testPostUser(): void
     {
-        $user =
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'POST',
+            self::USERS_LIST_URI,
             [
                 "name" => "Ja TEST",
                 "username" => "The Guinea Pig",
                 "email" => "ja.test@lovely-panda.fr"
             ]
-        ;
+        );
 
-        $this->client->request('POST', self::USERS_LIST_URI, [], [], ['CONTENT_TYPE'=>'application/json'], json_encode($user));
         $content = $this->client->getResponse()->getContent();
         $this->assertJson($content);
+        $this->assertSame(
+            Response::HTTP_CREATED,
+            $this->client->getResponse()->getStatusCode()
+        );
+    }
 
-        $this->assertSame(Response::HTTP_CREATED, $this->client->getResponse()->getStatusCode());
+    /**
+     * Test post to create a new user who does not belong to a client requester
+     * (bad token)
+     *
+     * @return void
+     */
+    public function testPostUserBadToken(): void
+    {
+        $this->requestAuthenticated(
+            'contact@bubble.com',
+            'POST',
+            self::USERS_LIST_URI,
+            [
+                "name" => "Ja TEST",
+                "username" => "The Guinea Pig",
+                "email" => "ja.test@lovely-panda.fr"
+            ]
+        );
+
+        $this->assertSame(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -149,21 +212,25 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testPostInvalidUser(): void
     {
-        $user =
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'POST',
+            self::USERS_LIST_URI,
             [
                 "name" => "Bad User",
                 "username" => "KO",
                 "email" => "bad.user@violations.com"
             ]
-        ;
+        );
 
-        $this->client->request('POST', self::USERS_LIST_URI, [], [], ['CONTENT_TYPE'=>'application/json'], json_encode($user));
         $content = $this->client->getResponse()->getContent();
         $this->assertJson($content);
         $content = json_decode($content, true);
         $this->assertArrayHasKey('message', $content);
-
-        $this->assertSame(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_BAD_REQUEST,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -173,9 +240,16 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testDeleteExistingUser(): void
     {
-        $this->client->request('DELETE', self::USERS_LIST_URI.'/'.self::USER_ID);
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'DELETE',
+            self::USERS_LIST_URI.'/'.self::USER_ID
+        );
 
-        $this->assertSame(Response::HTTP_NO_CONTENT, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_NO_CONTENT,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
@@ -185,9 +259,16 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testDeleteWrongUser(): void
     {
-        $this->client->request('DELETE', self::USERS_LIST_URI.'/'.self::BAD_USER_ID);
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'DELETE',
+            self::USERS_LIST_URI.'/'.self::BAD_USER_ID
+        );
 
-        $this->assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 
     /**
