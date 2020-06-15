@@ -6,8 +6,8 @@
 
 namespace App\Tests\Functional\Controller\Api;
 
+use App\Tests\Functional\AuthenticationTrait;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ClientUserControllerTest extends WebTestCase
 {
+    use AuthenticationTrait;
+
     /**
      * A constant that represent a tested URI
      *
@@ -45,13 +47,6 @@ class ClientUserControllerTest extends WebTestCase
     const BAD_USER_ID = 9;
 
     /**
-     * Helper to access test Client
-     *
-     * @var KernelBrowser
-     */
-    private $client;
-
-    /**
      * An ORM EntityManager Instance
      *
      * @var EntityManager
@@ -79,17 +74,10 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetUsersList(): void
     {
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
             'GET',
-            self::USERS_LIST_URI,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI
         );
 
         $content = $this->client->getResponse()->getContent();
@@ -109,17 +97,10 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetUsersBadToken(): void
     {
-        $data = array('username' => 'contact@bubble.com');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@bubble.com',
             'GET',
-            self::USERS_LIST_URI,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI
         );
 
         $this->assertSame(
@@ -135,18 +116,12 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetExistingUser(): void
     {
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
             'GET',
-            self::USERS_LIST_URI.'/'.self::USER_ID,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI.'/'.self::USER_ID
         );
+
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
 
@@ -167,17 +142,10 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testGetWrongUser(): void
     {
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
             'GET',
-            self::USERS_LIST_URI.'/'.self::BAD_USER_ID,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI.'/'.self::BAD_USER_ID
         );
 
         $this->assertSame(
@@ -193,32 +161,18 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testPostUser(): void
     {
-        $user =
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'POST',
+            self::USERS_LIST_URI,
             [
                 "name" => "Ja TEST",
                 "username" => "The Guinea Pig",
                 "email" => "ja.test@lovely-panda.fr"
             ]
-        ;
-
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
-            'POST',
-            self::USERS_LIST_URI,
-            [],
-            [],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer '. $token,
-                'CONTENT_TYPE'=>'application/json'
-            ],
-            json_encode($user)
         );
-        $content = $this->client->getResponse()->getContent();
 
+        $content = $this->client->getResponse()->getContent();
         $this->assertJson($content);
         $this->assertSame(
             Response::HTTP_CREATED,
@@ -234,29 +188,15 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testPostUserBadToken(): void
     {
-        $user =
+        $this->requestAuthenticated(
+            'contact@bubble.com',
+            'POST',
+            self::USERS_LIST_URI,
             [
                 "name" => "Ja TEST",
                 "username" => "The Guinea Pig",
                 "email" => "ja.test@lovely-panda.fr"
             ]
-        ;
-
-        $data = array('username' => 'contact@bubble.com');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
-            'POST',
-            self::USERS_LIST_URI,
-            [],
-            [],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer '. $token,
-                'CONTENT_TYPE'=>'application/json'
-            ],
-            json_encode($user)
         );
 
         $this->assertSame(
@@ -272,30 +212,17 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testPostInvalidUser(): void
     {
-        $user =
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
+            'POST',
+            self::USERS_LIST_URI,
             [
                 "name" => "Bad User",
                 "username" => "KO",
                 "email" => "bad.user@violations.com"
             ]
-        ;
-
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
-            'POST',
-            self::USERS_LIST_URI,
-            [],
-            [],
-            [
-                'HTTP_AUTHORIZATION' => 'Bearer '. $token,
-                'CONTENT_TYPE'=>'application/json'
-            ],
-            json_encode($user)
         );
+
         $content = $this->client->getResponse()->getContent();
         $this->assertJson($content);
         $content = json_decode($content, true);
@@ -313,17 +240,10 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testDeleteExistingUser(): void
     {
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
             'DELETE',
-            self::USERS_LIST_URI.'/'.self::USER_ID,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI.'/'.self::USER_ID
         );
 
         $this->assertSame(
@@ -339,17 +259,10 @@ class ClientUserControllerTest extends WebTestCase
      */
     public function testDeleteWrongUser(): void
     {
-        $data = array('username' => 'contact@lovely-panda.fr');
-        $token = $this->client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $this->client->request(
+        $this->requestAuthenticated(
+            'contact@lovely-panda.fr',
             'DELETE',
-            self::USERS_LIST_URI.'/'.self::BAD_USER_ID,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::USERS_LIST_URI.'/'.self::BAD_USER_ID
         );
 
         $this->assertSame(

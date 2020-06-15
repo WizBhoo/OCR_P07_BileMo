@@ -6,6 +6,7 @@
 
 namespace App\Tests\Functional\Controller\Api;
 
+use App\Tests\Functional\AuthenticationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PhoneControllerTest extends WebTestCase
 {
+    use AuthenticationTrait;
+
     /**
      * A constant that represent a tested URI
      *
@@ -29,32 +32,34 @@ class PhoneControllerTest extends WebTestCase
     const PHONE_ID = 50;
 
     /**
+     * Set up a client for test and the EntityManager
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        $this->client = $this->createClient(['environment' => 'test']);
+    }
+
+    /**
      * Test get the phones list
      *
      * @return void
      */
     public function testGetPhonesList(): void
     {
-        $client = static::createClient();
-        $data = array('username' => 'contact@bubble.com');
-        $token = $client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $client->request(
+        $this->requestAuthenticated(
+            'contact@bubble.com',
             'GET',
-            self::PHONES_LIST_URI,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::PHONES_LIST_URI
         );
 
-        $content = $client->getResponse()->getContent();
+        $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
         $this->assertCount(5, $content);
         $this->assertSame(
             Response::HTTP_OK,
-            $client->getResponse()->getStatusCode()
+            $this->client->getResponse()->getStatusCode()
         );
     }
 
@@ -65,21 +70,13 @@ class PhoneControllerTest extends WebTestCase
      */
     public function testGetExistingPhone(): void
     {
-        $client = static::createClient();
-        $data = array('username' => 'contact@bubble.com');
-        $token = $client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $client->request(
+        $this->requestAuthenticated(
+            'contact@bubble.com',
             'GET',
-            self::PHONES_LIST_URI.'/3',
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::PHONES_LIST_URI.'/3'
         );
 
-        $content = $client->getResponse()->getContent();
+        $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
         $this->assertArrayHasKey('brand', $content);
         $this->assertArrayHasKey('model', $content);
@@ -89,7 +86,7 @@ class PhoneControllerTest extends WebTestCase
         $this->assertArrayNotHasKey('email', $content);
         $this->assertSame(
             Response::HTTP_OK,
-            $client->getResponse()->getStatusCode()
+            $this->client->getResponse()->getStatusCode()
         );
     }
 
@@ -100,22 +97,15 @@ class PhoneControllerTest extends WebTestCase
      */
     public function testGetWrongPhone(): void
     {
-        $client = static::createClient();
-        $data = array('username' => 'contact@bubble.com');
-        $token = $client->getContainer()
-            ->get('lexik_jwt_authentication.encoder')
-            ->encode($data);
-
-        $client->request(
+        $this->requestAuthenticated(
+            'contact@bubble.com',
             'GET',
-            self::PHONES_LIST_URI.'/'.self::PHONE_ID,
-            [],
-            [],
-            ['HTTP_AUTHORIZATION' => 'Bearer '. $token]
+            self::PHONES_LIST_URI.'/'.self::PHONE_ID
         );
+
         $this->assertSame(
             Response::HTTP_NOT_FOUND,
-            $client->getResponse()->getStatusCode()
+            $this->client->getResponse()->getStatusCode()
         );
     }
 }
