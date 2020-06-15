@@ -17,6 +17,7 @@ use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -46,6 +47,7 @@ class ClientUserController extends AbstractFOSRestController
      * @Rest\View(
      *     serializerGroups={"client", "user_list"}
      * )
+     * @Cache(expires="+3 hour", public=true)
      *
      * @SWG\Parameter(
      *     name="id",
@@ -99,6 +101,7 @@ class ClientUserController extends AbstractFOSRestController
      * @Rest\View(
      *     serializerGroups={"client", "user_details"}
      * )
+     * @Cache(expires="+3 hour", public=true)
      * @ParamConverter(
      *     "client", options={"id" = "clientId"}
      * )
