@@ -48,14 +48,6 @@ class ClientUserController extends AbstractFOSRestController
      * )
      *
      * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
-     * @SWG\Parameter(
      *     name="id",
      *     in="path",
      *     type="integer",
@@ -114,14 +106,6 @@ class ClientUserController extends AbstractFOSRestController
      *     "clientUser", options={"id" = "userId"}
      * )
      *
-     * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
      * @SWG\Parameter(
      *     name="clientId",
      *     in="path",
@@ -193,14 +177,6 @@ class ClientUserController extends AbstractFOSRestController
      *     "clientUser", converter="fos_rest.request_body"
      * )
      *
-     * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
      * @SWG\Parameter(
      *     name="id",
      *     in="path",
@@ -304,14 +280,6 @@ class ClientUserController extends AbstractFOSRestController
      *     "clientUser", options={"id" = "userId"}
      * )
      *
-     * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
      * @SWG\Parameter(
      *     name="clientId",
      *     in="path",

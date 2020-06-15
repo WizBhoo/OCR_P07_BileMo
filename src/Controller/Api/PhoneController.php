@@ -32,14 +32,6 @@ class PhoneController extends AbstractFOSRestController
      * )
      * @Rest\View
      *
-     * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
      * @SWG\Response(
      *     response = 200,
      *     description = "Get the Phones list with success",
@@ -68,14 +60,6 @@ class PhoneController extends AbstractFOSRestController
      * )
      * @Rest\View
      *
-     * @SWG\Parameter(
-     *     name="Authorization",
-     *     in="header",
-     *     required=true,
-     *     type="string",
-     *     default="Bearer JWT",
-     *     description="Token required to request resources"
-     * )
      * @SWG\Parameter(
      *     name="id",
      *     in="path",
