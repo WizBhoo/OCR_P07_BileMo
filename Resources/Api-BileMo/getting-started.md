@@ -27,7 +27,7 @@ Special thanks to Rui TEIXEIRA and Yann LUCAS for PR Reviews
 *   Practically nothing to do except take note of the JWT_PASSPHRASE in the `.env` file.
 *   You can define your own JWT_PASSPHRASE if you want.
 
-### Generate the SSH keys :
+### Generate the SSH keys
 
 *   From your terminal, tape those command line :
 
@@ -65,8 +65,9 @@ php bin/console lexik:jwt:generate-token <email as username>
 <blockquote>
 About token expiration (small ttl definition) :
 
-*   Each request after token expiration will result in a 401 response.
-*   Redo the authentication process to obtain a new token.
+    - Each request after token expiration will result in a 401 response.
+
+    - Redo the authentication process to obtain a new token.
 </blockquote>
 
 -------------------------------------------------------------------------------------------------------------------------------------
