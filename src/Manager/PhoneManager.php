@@ -15,7 +15,7 @@ use App\Repository\PhoneRepository;
 class PhoneManager
 {
     /**
-     * A PhoneRepository Instance
+     * A PhoneRepository Instance.
      *
      * @var PhoneRepository
      */
@@ -32,7 +32,7 @@ class PhoneManager
     }
 
     /**
-     * Retrieve all phones from db
+     * Retrieve all phones from db.
      *
      * @return Phone[]
      */

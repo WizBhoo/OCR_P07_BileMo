@@ -33,7 +33,7 @@ class ClientUserRepository extends ServiceEntityRepository
     }
 
     /**
-     * Persists new User in db
+     * Persists new User in db.
      *
      * @param ClientUser $clientUser
      *
@@ -49,7 +49,7 @@ class ClientUserRepository extends ServiceEntityRepository
     }
 
     /**
-     * Remove a User in db
+     * Remove a User in db.
      *
      * @param ClientUser $clientUser
      *

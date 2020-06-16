@@ -18,7 +18,7 @@ use Doctrine\ORM\ORMException;
 class ClientUserManager
 {
     /**
-     * A ClientUserRepository Instance
+     * A ClientUserRepository Instance.
      *
      * @var ClientUserRepository
      */
@@ -35,7 +35,7 @@ class ClientUserManager
     }
 
     /**
-     * Create a new User in DB who belongs to a Client
+     * Create a new User in DB who belongs to a Client.
      *
      * @param Client     $client
      * @param ClientUser $clientUser
@@ -52,7 +52,7 @@ class ClientUserManager
     }
 
     /**
-     * Delete a User in DB who belongs to a Client
+     * Delete a User in DB who belongs to a Client.
      *
      * @param ClientUser $clientUser
      *

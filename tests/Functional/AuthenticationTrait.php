@@ -14,14 +14,14 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 trait AuthenticationTrait
 {
     /**
-     * Helper to access test Client
+     * Helper to access test Client.
      *
      * @var KernelBrowser
      */
     private $client;
 
     /**
-     * Make a tested request with Client authentication by JWT
+     * Make a tested request with Client authentication by JWT.
      *
      * @param string     $login
      * @param string     $verb
