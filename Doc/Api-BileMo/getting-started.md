@@ -31,7 +31,7 @@ Special thanks to Rui TEIXEIRA and Yann LUCAS for PR Reviews
 
 *   From your terminal, tape those command line :
 
-``` console
+```console
 $ mkdir -p config/jwt
 $ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
 $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
@@ -62,13 +62,10 @@ php bin/console lexik:jwt:generate-token <email as username>
 *   Simply pass the JWT on each request to the protected firewall, as an authorization header.
 *   By default, only the authorization header mode is enabled : `Authorization: Bearer {JWT}`
 
-<blockquote>
 About token expiration (small ttl definition) :
 
-    - Each request after token expiration will result in a 401 response.
-
-    - Redo the authentication process to obtain a new token.
-</blockquote>
+*   Each request after token expiration will result in a 401 response.
+*   Redo the authentication process to obtain a new token.
 
 -------------------------------------------------------------------------------------------------------------------------------------
 

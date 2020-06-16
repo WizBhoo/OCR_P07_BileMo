@@ -13,7 +13,7 @@ My WebSite is Online, and you can visit it : [APi - Site CV](https://adrien-pier
 *   I use a Docker Stack as personal local development environment, but you can use your own environment.
 *   Both method to install the project are the described bellow.
 *   As it is a Web service which expose an API, some parameters need to be setup before using the API.
-*   This information is available by following this link : [API BileMo - Getting Started](Resources/Api-BileMo/getting-started.md)
+*   This information is available by following this link : [API BileMo - Getting Started](Doc/Api-BileMo/getting-started.md)
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ php bin/console doctrine:fixtures:load
 ```
 
 *   Well done ! Project installed !
-*   Hold On ! It is a private API, so please, click on this link to follow the [API BileMo - Getting Started](Resources/Api-BileMo/getting-started.md) guide.
+*   Hold On ! It is a private API, so please, click on this link to follow the [API BileMo - Getting Started](Doc/Api-BileMo/getting-started.md) guide.
 *   Now you are ready !
 *   So you just have to go to your localhost home page to have access to the Nelmio API Doc.
 *   If you prefer, you can use software like Postman to request the API.
@@ -105,7 +105,7 @@ php bin/console doctrine:fixtures:load
 ```
 
 *   Well done ! Project installed !
-*   Hold On ! It is a private API, so please, click on this link to follow the [API BileMo - Getting Started](Resources/Api-BileMo/getting-started.md) guide.
+*   Hold On ! It is a private API, so please, click on this link to follow the [API BileMo - Getting Started](Doc/Api-BileMo/getting-started.md) guide.
 *   Now you are ready !
 *   So you just have to go to [mon-site.localhost](http://mon-site.localhost) to have access to the Nelmio API Doc.
 *   If you prefer, you can use software like Postman to request the API.
@@ -117,7 +117,7 @@ php bin/console doctrine:fixtures:load
 *   This project takes part of my training course to become a developer. Data presented are only used for demonstration.
 *   The BileMo API documentation is available from your local home page depending on the way you installed the project.
 *   Some parameters need to be setup before using the API.
-*   To do so, all is describe in the [API BileMo - Getting Started](Resources/Api-BileMo/getting-started.md)
+*   To do so, all is describe in the [API BileMo - Getting Started](Doc/Api-BileMo/getting-started.md)
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
