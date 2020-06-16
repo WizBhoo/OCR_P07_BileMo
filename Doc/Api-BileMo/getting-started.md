@@ -49,7 +49,6 @@ $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
 ```console
 make sh
 cd symfony/
-composer install
 php bin/console lexik:jwt:generate-token <email as username>
 ``` 
 
