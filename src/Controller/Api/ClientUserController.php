@@ -83,7 +83,7 @@ class ClientUserController extends AbstractFOSRestController
         }
 
         return [
-            "Client Users List" => $client->getClientUsers(),
+            "items" => $client->getClientUsers(),
             "_links" => [
                 "self" => [
                     "href" => $router->generate(

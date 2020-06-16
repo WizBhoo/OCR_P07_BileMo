@@ -82,7 +82,7 @@ class ClientUserControllerTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
-        $this->assertCount(4, $content['Client Users List']);
+        $this->assertCount(4, $content['items']);
         $this->assertSame(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()

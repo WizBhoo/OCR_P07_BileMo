@@ -48,7 +48,7 @@ class PhoneController extends AbstractFOSRestController
     public function getPhones(PhoneManager $phoneManager, RouterInterface $router): ?array
     {
         return [
-            "BilMo Phones List" => $phoneManager->findAllPhone(),
+            "items" => $phoneManager->findAllPhone(),
             "_links" => [
                 "self" => [
                     "href" => $router->generate(
