@@ -11,7 +11,6 @@ use App\Entity\ClientUser;
 use App\Exception\ForbiddenException;
 use App\Exception\ResourceValidationException;
 use App\Manager\ClientUserManager;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -23,6 +22,7 @@ use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -33,11 +33,12 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class ClientUserController extends AbstractFOSRestController
 {
     /**
-     * Retrieves a collection of User resource who belong to a Client
+     * Retrieves a collection of User resource who belong to a Client.
      *
-     * @param Client $client
+     * @param Client          $client
+     * @param RouterInterface $router
      *
-     * @return Collection|null
+     * @return array|null
      *
      * @Rest\Get(
      *     path = "/clients/{id}/users",
@@ -47,7 +48,7 @@ class ClientUserController extends AbstractFOSRestController
      * @Rest\View(
      *     serializerGroups={"client", "user_list"}
      * )
-     * @Cache(expires="+3 hour", public=true)
+     * @Cache(expires="+1 hour", public=true)
      *
      * @SWG\Parameter(
      *     name="id",
@@ -73,18 +74,37 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "The Client does not exist"
      * )
      */
-    public function getClientUsers(Client $client): ?Collection
+    public function getClientUsers(Client $client, RouterInterface $router): ?array
     {
         if ($this->getUser()->getUsername() !== $client->getEmail()) {
             throw new ForbiddenException(
                 "Forbidden access to this content"
             );
         }
-        return $client->getClientUsers();
+
+        return [
+            "items" => $client->getClientUsers(),
+            "_links" => [
+                "self" => [
+                    "href" => $router->generate(
+                        "api_client_users_list",
+                        ["id" => $client->getId()],
+                        RouterInterface::ABSOLUTE_URL
+                    ),
+                ],
+                "create" => [
+                    "href" => $router->generate(
+                        "api_client_user_create",
+                        ["id" => $client->getId()],
+                        RouterInterface::ABSOLUTE_URL
+                    ),
+                ]
+            ],
+        ];
     }
 
     /**
-     * Retrieves details of a User resource who belongs to a Client
+     * Retrieves details of a User resource who belongs to a Client.
      *
      * @param Client     $client
      * @param ClientUser $clientUser
@@ -101,7 +121,7 @@ class ClientUserController extends AbstractFOSRestController
      * @Rest\View(
      *     serializerGroups={"client", "user_details"}
      * )
-     * @Cache(expires="+3 hour", public=true)
+     * @Cache(expires="+1 hour", public=true)
      * @ParamConverter(
      *     "client", options={"id" = "clientId"}
      * )
@@ -154,7 +174,7 @@ class ClientUserController extends AbstractFOSRestController
     }
 
     /**
-     * Add a User resource belonging to the Client who adds him
+     * Add a User resource belonging to the Client who adds him.
      *
      * @param Client                  $client
      * @param ClientUser              $clientUser
@@ -256,7 +276,7 @@ class ClientUserController extends AbstractFOSRestController
     }
 
     /**
-     * Delete a User resource belonging to the Client who deletes him
+     * Delete a User resource belonging to the Client who deletes him.
      *
      * @param Client            $client
      * @param ClientUser        $clientUser

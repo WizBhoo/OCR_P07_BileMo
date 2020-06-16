@@ -18,21 +18,21 @@ class PhoneControllerTest extends WebTestCase
     use AuthenticationTrait;
 
     /**
-     * A constant that represent a tested URI
+     * A constant that represent a tested URI.
      *
      * @var string
      */
     const PHONES_LIST_URI = '/api/phones';
 
     /**
-     * A constant that represent a phone that does not exist
+     * A constant that represent a phone that does not exist.
      *
      * @var int
      */
     const PHONE_ID = 50;
 
     /**
-     * Set up a client for test and the EntityManager
+     * Set up a client for test and the EntityManager.
      *
      * @return void
      */
@@ -42,7 +42,7 @@ class PhoneControllerTest extends WebTestCase
     }
 
     /**
-     * Test get the phones list
+     * Test get the phones list.
      *
      * @return void
      */
@@ -56,7 +56,7 @@ class PhoneControllerTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
-        $this->assertCount(5, $content);
+        $this->assertCount(5, $content['items']);
         $this->assertSame(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
@@ -64,7 +64,7 @@ class PhoneControllerTest extends WebTestCase
     }
 
     /**
-     * Test get details of an existing phone
+     * Test get details of an existing phone.
      *
      * @return void
      */
@@ -91,7 +91,7 @@ class PhoneControllerTest extends WebTestCase
     }
 
     /**
-     * Test get details of a phone that does not exist
+     * Test get details of a phone that does not exist.
      *
      * @return void
      */

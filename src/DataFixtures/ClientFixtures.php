@@ -49,7 +49,10 @@ class ClientFixtures extends Fixture
                 ->setEmail($sample[1])
             ;
             $manager->persist($client);
-            $this->addReference(self::CLIENT_REFERENCE_PREFIX.($key + 1), $client);
+            $this->addReference(
+                self::CLIENT_REFERENCE_PREFIX.($key + 1),
+                $client
+            );
         }
 
         $manager->flush();

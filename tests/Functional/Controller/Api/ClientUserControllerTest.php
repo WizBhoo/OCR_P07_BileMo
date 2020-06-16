@@ -19,42 +19,42 @@ class ClientUserControllerTest extends WebTestCase
     use AuthenticationTrait;
 
     /**
-     * A constant that represent a tested URI
+     * A constant that represent a tested URI.
      *
      * @var string
      */
     const USERS_LIST_URI = '/api/clients/'.self::CLIENT_ID.'/users';
 
     /**
-     * A constant that represent a client
+     * A constant that represent a client.
      *
      * @var int
      */
     const CLIENT_ID = 2;
 
     /**
-     * A constant that represent a user who belongs to the Client 2
+     * A constant that represent a user who belongs to the Client 2.
      *
      * @var int
      */
     const USER_ID = 4;
 
     /**
-     * A constant that represent a user that does not belong to the Client 2
+     * A constant that represent a user that does not belong to the Client 2.
      *
      * @var int
      */
     const BAD_USER_ID = 9;
 
     /**
-     * An ORM EntityManager Instance
+     * An ORM EntityManager Instance.
      *
      * @var EntityManager
      */
     private $entityManager;
 
     /**
-     * Set up a client for test and the EntityManager
+     * Set up a client for test and the EntityManager.
      *
      * @return void
      */
@@ -68,7 +68,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test get users who belong to a client
+     * Test get users who belong to a client.
      *
      * @return void
      */
@@ -82,8 +82,7 @@ class ClientUserControllerTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
-
-        $this->assertCount(4, $content);
+        $this->assertCount(4, $content['items']);
         $this->assertSame(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
@@ -91,7 +90,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test get users who does not belong to client requester (bad token)
+     * Test get users who does not belong to client requester (bad token).
      *
      * @return void
      */
@@ -110,7 +109,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test get details of an existing user who belongs to a client
+     * Test get details of an existing user who belongs to a client.
      *
      * @return void
      */
@@ -124,7 +123,6 @@ class ClientUserControllerTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
-
         $this->assertArrayHasKey('name', $content);
         $this->assertArrayHasKey('username', $content);
         $this->assertArrayHasKey('email', $content);
@@ -136,7 +134,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test get details of a user who does not belong to a client
+     * Test get details of a user who does not belong to a client.
      *
      * @return void
      */
@@ -155,7 +153,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test post to create a new user who belong to a client
+     * Test post to create a new user who belong to a client.
      *
      * @return void
      */
@@ -181,8 +179,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test post to create a new user who does not belong to a client requester
-     * (bad token)
+     * Test post to create a new user who does not belong to a client requester (bad token).
      *
      * @return void
      */
@@ -206,7 +203,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test violations when trying to create a user who belong to a client
+     * Test violations when trying to create a user who belong to a client.
      *
      * @return void
      */
@@ -234,7 +231,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test delete of an existing user who belongs to a client
+     * Test delete of an existing user who belongs to a client.
      *
      * @return void
      */
@@ -253,7 +250,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Test delete of a user who does not belong to a client
+     * Test delete of a user who does not belong to a client.
      *
      * @return void
      */
@@ -272,7 +269,7 @@ class ClientUserControllerTest extends WebTestCase
     }
 
     /**
-     * Called after each test using entityManager to avoid memory leaks
+     * Called after each test using entityManager to avoid memory leaks.
      *
      * @return void
      */
