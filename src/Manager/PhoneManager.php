@@ -8,6 +8,7 @@ namespace App\Manager;
 
 use App\Entity\Phone;
 use App\Repository\PhoneRepository;
+use Exception;
 
 /**
  * Class PhoneManager.
@@ -32,12 +33,24 @@ class PhoneManager
     }
 
     /**
-     * Retrieve all phones from db.
+     * Retrieve all phones from db and paginates the list.
+     *
+     * @param int|null $page
      *
      * @return Phone[]
+     *
+     * @throws Exception
      */
-    public function findAllPhone(): array
+    public function findAllPhone(?int $page): array
     {
-        return $this->phoneRepository->findAll();
+        if (null === $page || $page < 1) {
+            $page = 1;
+        }
+
+        $limit = 3;
+
+        $data = $this->phoneRepository->findAllPhones($page, $limit);
+
+        return $data->getIterator()->getArrayCopy();
     }
 }

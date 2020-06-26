@@ -6,10 +6,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Client;
 use App\Entity\ClientUser;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -30,6 +32,26 @@ class ClientUserRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ClientUser::class);
+    }
+
+    /**
+     * Retrieves Users list who belong to a Client in DB and paginated.
+     *
+     * @param int    $page
+     * @param int    $limit
+     * @param Client $client
+     *
+     * @return Paginator
+     */
+    public function findClientUsers(int $page, int $limit, Client $client): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->where('c.client = '.$client->getId())
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return new Paginator($query);
     }
 
     /**
