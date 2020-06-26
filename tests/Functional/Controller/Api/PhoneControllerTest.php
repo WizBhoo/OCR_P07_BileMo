@@ -56,7 +56,7 @@ class PhoneControllerTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
         $content = json_decode($content, true);
-        $this->assertCount(5, $content['items']);
+        $this->assertCount(3, $content['items']);
         $this->assertSame(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()

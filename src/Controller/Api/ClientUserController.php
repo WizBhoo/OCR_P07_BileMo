@@ -13,6 +13,7 @@ use App\Exception\ResourceValidationException;
 use App\Manager\ClientUserManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -20,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -35,10 +37,14 @@ class ClientUserController extends AbstractFOSRestController
     /**
      * Retrieves a collection of User resource who belong to a Client.
      *
-     * @param Client          $client
-     * @param RouterInterface $router
+     * @param Request           $request
+     * @param Client            $client
+     * @param RouterInterface   $router
+     * @param ClientUserManager $clientUserManager
      *
      * @return array|null
+     *
+     * @throws Exception
      *
      * @Rest\Get(
      *     path = "/clients/{id}/users",
@@ -74,8 +80,10 @@ class ClientUserController extends AbstractFOSRestController
      *     description = "The Client does not exist"
      * )
      */
-    public function getClientUsers(Client $client, RouterInterface $router): ?array
+    public function getClientUsers(Request $request, Client $client, RouterInterface $router, ClientUserManager $clientUserManager): ?array
     {
+        $page = $request->query->get('page');
+
         if ($this->getUser()->getUsername() !== $client->getEmail()) {
             throw new ForbiddenException(
                 "Forbidden access to this content"
@@ -83,7 +91,7 @@ class ClientUserController extends AbstractFOSRestController
         }
 
         return [
-            "items" => $client->getClientUsers(),
+            "items" => $clientUserManager->clientUsersList($page, $client),
             "_links" => [
                 "self" => [
                     "href" => $router->generate(
@@ -99,6 +107,14 @@ class ClientUserController extends AbstractFOSRestController
                         RouterInterface::ABSOLUTE_URL
                     ),
                 ]
+            ],
+            "meta" => [
+                "limit" => "3",
+                "next_page" => $router->generate(
+                    "api_phones_list",
+                    ['page' => $page === null ? $page+2 : $page+1],
+                    RouterInterface::ABSOLUTE_URL
+                )
             ],
         ];
     }
